@@ -40,21 +40,22 @@
 	};
 
 	//Min
-	Bom.QuarterMinView = function(hourView, min){
-		Bom.QuarterMinView.super_.prototype.constructor.call(this);
+	Bom.MinView = function(hourView, min, minUnit){
+		Bom.MinView.super_.prototype.constructor.call(this);
 		this._hourView = hourView;
 		this._min = min;
+		this._minUnit = minUnit;
 	};
 
-	Bom.Util.inherits(Bom.QuarterMinView, Bom.View);
+	Bom.Util.inherits(Bom.MinView, Bom.View);
 
-	Bom.QuarterMinView.prototype._getClassName = function(){
-		return 'bomQuarterMin';
+	Bom.MinView.prototype._getClassName = function(){
+		return 'bomMin';
 	};
 
-	Bom.QuarterMinView.prototype._render = function(){
-		this._element.addClass('_'+ this._min + '-' + (this._min + 15));
-		this._element.height(15);
+	Bom.MinView.prototype._render = function(){
+		this._element.addClass('_'+ (this._min + this._minUnit));
+		this._element.height(this._minUnit);
 		return this._element;
 	};
 
@@ -80,7 +81,7 @@
 		var minUnit = 15;
 		var count = 60/minUnit;
 		for (var i = 0; i < count; i++) {
-			var min = new Bom.QuarterMinView(this, i*minUnit);
+			var min = new Bom.MinView(this, i*minUnit, minUnit);
 			this._element.append(min.render());
 		}
 
@@ -132,10 +133,8 @@
 	Bom.TimeLineView.prototype.refreshRuler = function(){
 		var self = this;
 		self._element.addClass('hasRuler');
-		
-		var rulerWrap = $('<div class="bomRuler" />')
-			.prependTo(self._element)
-			.css('marginTop', '-9px');
+
+		var rulerWrap = $('<div class="bomRuler" />').prependTo(self._element);
 
 		this._hourViews.forEach(function(hourView){
 			var hourRuler = $('<div class="hour">'+hourView.getHour()+':00'+'</div>');
@@ -184,19 +183,24 @@
 
 $(function(){
 	var wrap = $("#timetable");
-	for (var i = 0; i < 10; i++) {
+	var totalWidth = 0;
+	for (var i = 0; i < 20; i++) {
 		var timeline = new Bom.TimeLineView(new Bom.TimeSpan(new Bom.Time(10), new Bom.Time(1)));
 		wrap.append(timeline.render());
 
-		if(i === 0 || i === 5){
+		if(i % 5 === 0){
 			timeline.refreshRuler();
 		}
 
 		if(i % 2 === 0){
-			timeline.getElement().addClass('even')
+			timeline.getElement().addClass('even');
 		}else{
-			timeline.getElement().addClass('odd')
-		}			
+			timeline.getElement().addClass('odd');
+		}
+
+		totalWidth += timeline.getElement().width();	
 	}
+
+	wrap.width(totalWidth);
 
 });

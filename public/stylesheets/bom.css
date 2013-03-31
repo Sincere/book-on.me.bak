@@ -6,5 +6,5 @@
 .bomTimeLineWrap.even .bomTimeLine{background-color:#f3f3f3}
 .bomTimeLine{width:80px;float:left}
 .bomTimeLine .bomHour{border-top:1px solid #777}
-.bomTimeLine .bomQuarterMin._0-15,.bomTimeLine .bomQuarterMin._30-45{border-bottom:1px dashed #ddd}
-.bomTimeLine .bomQuarterMin._15-30{border-bottom:1px solid #ccc}
+.bomTimeLine .bomMin._15,.bomTimeLine .bomMin._45{border-bottom:1px dashed #ddd}
+.bomTimeLine .bomMin._30{border-bottom:1px solid #ccc}
