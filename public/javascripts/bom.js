@@ -30,6 +30,10 @@
 		this._element.appendTo('body').hide();
 	};
 
+	Bom.View.prototype.getElement = function(){
+		return this._element;
+	};
+
 	Bom.View.prototype.render = function(){
 		var elem = this._render();
 		return elem.show();
@@ -45,7 +49,7 @@
 	Bom.Util.inherits(Bom.QuarterMinView, Bom.View);
 
 	Bom.QuarterMinView.prototype._getClassName = function(){
-		return 'bomMin';
+		return 'bomQuarterMin';
 	};
 
 	Bom.QuarterMinView.prototype._render = function(){
@@ -78,7 +82,7 @@
 		for (var i = 0; i < count; i++) {
 			var min = new Bom.QuarterMinView(this, i*minUnit);
 			this._element.append(min.render());
-		};
+		}
 
 		this._element.addClass('_'+this._hour);
 
@@ -90,22 +94,25 @@
 	Bom.TimeLineView = function(timeSpan){
 		Bom.TimeLineView.super_.prototype.constructor.call(this);
 		this._timeSpan = timeSpan;
+		this._hourViews = [];
 	};
 
 	Bom.Util.inherits(Bom.TimeLineView, Bom.View);
 
 	Bom.TimeLineView.prototype._getClassName = function(){
-		return 'bomTimeLine';
+		return 'bomTimeLineWrap';
 	};
 
 	Bom.TimeLineView.prototype._render = function(){
+		var timeline = $('<div class="bomTimeLine" />').appendTo(this._element);
 		//分は無視する
 		var time = this._timeSpan.getStartTime().getHour();
 		var end = this._timeSpan.getEndTime().getHour();
 		while(true)
 		{
 			var hourView = new Bom.HourView(this, time);
-			this._element.append(hourView.render());
+			timeline.append(hourView.render());
+			this._hourViews.push(hourView);
 
 			if(time === end)
 			{
@@ -120,6 +127,21 @@
 		}
 
 		return this._element;
+	};
+
+	Bom.TimeLineView.prototype.refreshRuler = function(){
+		var self = this;
+		self._element.addClass('hasRuler');
+		
+		var rulerWrap = $('<div class="bomRuler" />')
+			.prependTo(self._element)
+			.css('marginTop', '-9px');
+
+		this._hourViews.forEach(function(hourView){
+			var hourRuler = $('<div class="hour">'+hourView.getHour()+':00'+'</div>');
+			rulerWrap.append(hourRuler);
+			hourRuler.height(hourView.getElement().outerHeight());
+		});
 	};
 
 
@@ -162,7 +184,19 @@
 
 $(function(){
 	var wrap = $("#timetable");
-	var timeline = new Bom.TimeLineView(new Bom.TimeSpan(new Bom.Time(10), new Bom.Time(1)));
-	wrap.append(timeline.render());
+	for (var i = 0; i < 10; i++) {
+		var timeline = new Bom.TimeLineView(new Bom.TimeSpan(new Bom.Time(10), new Bom.Time(1)));
+		wrap.append(timeline.render());
+
+		if(i === 0 || i === 5){
+			timeline.refreshRuler();
+		}
+
+		if(i % 2 === 0){
+			timeline.getElement().addClass('even')
+		}else{
+			timeline.getElement().addClass('odd')
+		}			
+	}
 
 });
