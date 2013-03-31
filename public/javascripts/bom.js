@@ -32,36 +32,26 @@
 
 	Bom.View.prototype.render = function(){
 		var elem = this._render();
-
-		if(this._getTitle)
-		{
-			elem.prepend('<div class="bomTitle">'+this._getTitle()+'</div>');
-		}
-		
 		return elem.show();
 	};
 
 	//Min
-	Bom.MinView = function(hourView, min){
-		Bom.MinView.super_.prototype.constructor.call(this);
-		this._houeView = hourView;
+	Bom.QuarterMinView = function(hourView, min){
+		Bom.QuarterMinView.super_.prototype.constructor.call(this);
+		this._hourView = hourView;
 		this._min = min;
 	};
 
-	Bom.Util.inherits(Bom.MinView, Bom.View);
+	Bom.Util.inherits(Bom.QuarterMinView, Bom.View);
 
-	Bom.MinView.prototype._getClassName = function(){
+	Bom.QuarterMinView.prototype._getClassName = function(){
 		return 'bomMin';
 	};
 
-	Bom.MinView.prototype._render = function(){
-		this._element.addClass('_'+this._min);
-		this._element.html('&nbsp;');
+	Bom.QuarterMinView.prototype._render = function(){
+		this._element.addClass('_'+ this._min + '-' + (this._min + 15));
+		this._element.height(15);
 		return this._element;
-	};
-
-	Bom.MinView.prototype._getTitle = function(){
-		return this._min;
 	};
 
 
@@ -78,19 +68,15 @@
 		return 'bomHour';
 	};
 
-	Bom.HourView.prototype._getTitle = function(){
-		return this._hour+':00';
-	};
-
 	Bom.HourView.prototype.getHour = function(){
 		return this._hour;
 	};
 
 	Bom.HourView.prototype._render = function(){
-		var minUnit = this._timeLineView.getMinUnit();
+		var minUnit = 15;
 		var count = 60/minUnit;
 		for (var i = 0; i < count; i++) {
-			var min = new Bom.MinView(this, i*minUnit);
+			var min = new Bom.QuarterMinView(this, i*minUnit);
 			this._element.append(min.render());
 		};
 
@@ -101,18 +87,12 @@
 
 
 	//TimeLine
-	Bom.TimeLineView = function(startTime, endTime, minUnit){
+	Bom.TimeLineView = function(timeSpan){
 		Bom.TimeLineView.super_.prototype.constructor.call(this);
-		this._startTime = startTime;
-		this._endTime = endTime;
-		this._minUnit = minUnit;
+		this._timeSpan = timeSpan;
 	};
 
 	Bom.Util.inherits(Bom.TimeLineView, Bom.View);
-
-	Bom.TimeLineView.prototype.getMinUnit = function(){
-		return this._minUnit;
-	};
 
 	Bom.TimeLineView.prototype._getClassName = function(){
 		return 'bomTimeLine';
@@ -120,8 +100,8 @@
 
 	Bom.TimeLineView.prototype._render = function(){
 		//分は無視する
-		var time = this._startTime.getHour();
-		var end = this._endTime.getHour();
+		var time = this._timeSpan.getStartTime().getHour();
+		var end = this._timeSpan.getEndTime().getHour();
 		while(true)
 		{
 			var hourView = new Bom.HourView(this, time);
@@ -142,6 +122,7 @@
 		return this._element;
 	};
 
+
 	//Time
 	Bom.Time = function(hour, min){
 		this._hour = hour === undefined ? 0 : parseInt(hour, 10);
@@ -151,24 +132,37 @@
 	Bom.Time.prototype.getHour = function(){ return this._hour; };
 	Bom.Time.prototype.getMin = function(){ return this._min; };
 
+	Bom.Time.prototype.getDistance = function(targetTime){
+		var targetHour = targetTime.getHour();
+		if(this._hour > targetHour)
+		{
+			targetHour += 24;
+		}
+
+		var hourDistance = targetHour - this._hour;
+
+		return (hourDistance * 60) + (targetTime.getMin() - this._min);
+	};
+
 	//TimeSpan
 	Bom.TimeSpan = function(startTime, endTime){
 		this._startTime = startTime;
 		this._endTime = endTime;
 	};
 
-	Bom.TimeSpan.prototype.eachHour = function(callback){
-		
+	Bom.TimeSpan.prototype.getDistance = function(){
+		return this._startTime.calcMinDistance(this._endTime);
 	};
+
+	Bom.TimeSpan.prototype.getStartTime = function(){ return this._startTime; };
+	Bom.TimeSpan.prototype.getEndTime = function(){ return this._endTime; };
 
 })();
 
 
 $(function(){
 	var wrap = $("#timetable");
-	var timeline = new Bom.TimeLineView(new Bom.Time(10), new Bom.Time(1), 5);
+	var timeline = new Bom.TimeLineView(new Bom.TimeSpan(new Bom.Time(10), new Bom.Time(1)));
 	wrap.append(timeline.render());
-
-	timeline.addActiveSpan();
 
 });
