@@ -105,14 +105,14 @@
 	};
 
 	Bom.TimeLineView.prototype._render = function(){
-		var timeline = $('<div class="bomTimeLine" />').appendTo(this._element);
+		var timeLine = $('<div class="bomTimeLine" />').appendTo(this._element);
 		//分は無視する
 		var time = this._timeSpan.getStartTime().getHour();
 		var end = this._timeSpan.getEndTime().getHour();
 		while(true)
 		{
 			var hourView = new Bom.HourView(this, time);
-			timeline.append(hourView.render());
+			timeLine.append(hourView.render());
 			this._hourViews.push(hourView);
 
 			if(time === end)
@@ -184,21 +184,22 @@
 $(function(){
 	var wrap = $("#timetable");
 	var totalWidth = 0;
+	var timeLines = [];
 	for (var i = 0; i < 20; i++) {
-		var timeline = new Bom.TimeLineView(new Bom.TimeSpan(new Bom.Time(10), new Bom.Time(1)));
-		wrap.append(timeline.render());
+		var timeLine = new Bom.TimeLineView(new Bom.TimeSpan(new Bom.Time(10), new Bom.Time(1)));
+		wrap.append(timeLine.render());
 
 		if(i % 5 === 0){
-			timeline.refreshRuler();
+			timeLine.refreshRuler();
 		}
 
 		if(i % 2 === 0){
-			timeline.getElement().addClass('even');
+			timeLine.getElement().addClass('even');
 		}else{
-			timeline.getElement().addClass('odd');
+			timeLine.getElement().addClass('odd');
 		}
 
-		totalWidth += timeline.getElement().width();	
+		totalWidth += timeLine.getElement().width();
 	}
 
 	wrap.width(totalWidth);
