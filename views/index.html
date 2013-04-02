@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}My Page{% endblock %}
+
+{% block head %}
+  {% parent %}
+  <link rel="stylesheet" href="/stylesheets/bom.css">
+  <link rel="stylesheet" href="/stylesheets/time-table.css">
+  <script type="text/javascript" src="/javascripts/bom.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="timetable" class="clearfix"></div>
+{% endblock %}

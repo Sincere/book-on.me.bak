@@ -9,7 +9,9 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , stylus = require('stylus')
-  , nib = require('nib');
+  , nib = require('nib')
+  , cons = require('consolidate')
+  , swig = require('swig');
 
 var app = express();
 
@@ -25,10 +27,17 @@ app.use(stylus.middleware({
   , compile: compile
 }));
 
+swig.init({
+  root: __dirname + '/views',
+  allowErrors: true,
+  cache: false
+});
+
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
+  app.engine('.html', cons.swig);
+  app.set('view engine', 'html');
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.favicon());
   app.use(express.logger('dev'));
