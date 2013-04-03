@@ -1,0 +1,3 @@
+[submodule "public/javascripts/timeline"]
+	path = public/javascripts/timeline
+	url = git@github.com:gomo/timeline.git
