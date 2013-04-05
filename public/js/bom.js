@@ -25,7 +25,7 @@ $(function(){
 	wrap.width(totalWidth);
 
 
-	var ev = new tl.EventView(new tl.TimeSpan(new tl.Time(11), new tl.Time(12, 30)), 'gray');
+	var ev = new tl.EventView(new tl.TimeSpan(new tl.Time(10, 15), new tl.Time(14, 15)), 'gray');
 	timelines[0].addEventView(ev);
 
 });
