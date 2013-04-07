@@ -1,4 +1,2 @@
-@import 'bootstrap.min.css';
-@import 'bootstrap-responsive.min.css';
 *{font-family:"lucida grande",tahoma,arial,'Hiragino Kaku Gothic Pro',Meiryo,'MS PGothic',sans-serif}
-#timetable{margin:20px auto}
+#wrapper{margin:20px auto;width:90%}
