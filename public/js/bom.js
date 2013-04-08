@@ -42,22 +42,22 @@ $(function(){
 		switch(elem.attr('class')){
 			case 'left':
 				timelines.forEach(function(timeline){
-					timeline.updateLineWidth(-2);
+					timeline.addLineWidth(-2);
 				});
 				break;
 			case 'right':
 				timelines.forEach(function(timeline){
-					timeline.updateLineWidth(2);
+					timeline.addLineWidth(2);
 				});
 				break;
 			case 'up':
 				timelines.forEach(function(timeline){
-					timeline.updateHeightPerMin(-0.1);
+					timeline.addHeightPerMin(-0.1);
 				});
 				break;
 			case 'down':
 				timelines.forEach(function(timeline){
-					timeline.updateHeightPerMin(0.1);
+					timeline.addHeightPerMin(0.1);
 				});
 				break;
 		}
