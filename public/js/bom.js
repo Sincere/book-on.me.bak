@@ -3,8 +3,8 @@ $(function(){
 	var wrap = $("#timetable");
 	var totalWidth = 0;
 	var timelines = [];
-	for (var i = 0; i < 20; i++) {
-		var timeline = new tl.LineView(new tl.TimeSpan(new tl.Time(10), new tl.Time(1)));
+	for (var i = 0; i < 10; i++) {
+		var timeline = new tl.LineView(new tl.TimeSpan(new tl.Time(10), new tl.Time(25, 59)));
 		wrap.append(timeline.render());
 
 		if(i % 5 === 0){
